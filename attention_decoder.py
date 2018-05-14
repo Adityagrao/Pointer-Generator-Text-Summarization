@@ -142,7 +142,7 @@ def attention_decoder(decoder_inputs, initial_state, encoder_states, enc_padding
             input_size = inp.get_shape().with_rank(2)[1]
             if input_size.value is None:
                 raise ValueError("Could not infer input size from input: %s" % inp.name)
-            x = np.linear([inp] + [context_vector], input_size, True)
+            x = linear([inp] + [context_vector], input_size, True)
 
             # Run the decoder RNN cell. cell_output = decoder state
             cell_output, state = cell(x, state)
@@ -159,14 +159,14 @@ def attention_decoder(decoder_inputs, initial_state, encoder_states, enc_padding
             # Calculate p_gen
             if pointer_gen:
                 with tf.variable_scope('calculate_pgen'):
-                    p_gen = np.linear([context_vector, state.c, state.h, x], 1, True)  # a scalar
+                    p_gen = linear([context_vector, state.c, state.h, x], 1, True)  # a scalar
                     p_gen = tf.sigmoid(p_gen)
                     p_gens.append(p_gen)
 
             # Concatenate the cell_output (= decoder state) and the context vector, and pass them through a linear layer
             # This is V[s_t, h*_t] + b in the paper
             with variable_scope.variable_scope("AttnOutputProjection"):
-                output = np.linear([cell_output] + [context_vector], cell.output_size, True)
+                output = linear([cell_output] + [context_vector], cell.output_size, True)
             outputs.append(output)
 
         # If using coverage, reshape it

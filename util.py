@@ -1,7 +1,7 @@
 import tensorflow as tf
 import time
 import os
-FLAGS = tf.app.flags.FLAGS
+FLAGS = tf.flags.FLAGS
 
 def get_config():
   """Returns config for tf.session"""

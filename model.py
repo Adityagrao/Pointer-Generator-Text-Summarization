@@ -8,7 +8,7 @@ import tensorflow as tf
 from attention_decoder import attention_decoder
 from tensorflow.contrib.tensorboard.plugins import projector
 
-FLAGS = tf.app.flags.FLAGS
+FLAGS = tf.flags.FLAGS
 
 class SummarizationModel(object):
   """A class to represent a sequence-to-sequence model for text summarization. Supports both baseline mode, pointer-generator mode, and coverage"""

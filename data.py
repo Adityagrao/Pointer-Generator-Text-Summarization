@@ -27,12 +27,12 @@ class Vocab(object):
 
         self._word_to_id = {}
         self._id_to_word = {}
-        self._count ={} # keeps track of total number of words in the Vocab
+        self._count = 0 # keeps track of total number of words in the Vocab
 
         # [UNK], [PAD], [START] and [STOP] get the ids 0,1,2,3.
 
         for w in [UNKNOWN_TOKEN, PAD_TOKEN, START_DECODING, STOP_DECODING]:
-            self._word_to_id = self._count
+            self._word_to_id[w] = self._count
             self._id_to_word[self._count] = w
             self._count += 1
 
@@ -85,7 +85,6 @@ class Vocab(object):
             writer = csv.DictWriter(f, delimiter = "\t", fieldnames=fieldnames)
             for i in range (self.size()):
                 writer.writerow({"word" : self._id_to_word[i]})
-
 
     def example_generator(data_path, single_pass):
         """Generates tf.Examples from data files.

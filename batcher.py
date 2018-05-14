@@ -6,6 +6,7 @@ import time
 import numpy as np
 import tensorflow as tf
 import data
+import queue
 
 
 class Example(object):
@@ -220,8 +221,8 @@ class Batcher(object):
         self._single_pass = single_pass
 
         # Initialize a queue of Batches waiting to be used, and a queue of Examples waiting to be batched
-        self._batch_queue = Queue.Queue(self.BATCH_QUEUE_MAX)
-        self._example_queue = Queue.Queue(self.BATCH_QUEUE_MAX * self._hps.batch_size)
+        self._batch_queue = queue.Queue(self.BATCH_QUEUE_MAX)
+        self._example_queue = queue.Queue(self.BATCH_QUEUE_MAX * self._hps.batch_size.value)
 
         # Different settings depending on whether we're in single_pass mode or not
         if single_pass:
@@ -275,7 +276,7 @@ class Batcher(object):
     def fill_example_queue(self):
         """Reads data from file and processes into Examples which are then placed into the example queue."""
 
-        input_gen = self.text_generator(data.example_generator(self._data_path, self._single_pass))
+        input_gen = self.text_generator(data.Vocab.example_generator(self._data_path, self._single_pass))
 
         while True:
             try:
@@ -291,7 +292,7 @@ class Batcher(object):
                 else:
                     raise Exception("single_pass mode is off but the example generator is out of data; error.")
 
-            abstract_sentences = [sent.strip() for sent in data.abstract2sents(
+            abstract_sentences = [sent.strip() for sent in data.Vocab.abstract2sents(
                 abstract)]  # Use the <s> and </s> tags in abstract to get a list of sentences.
             example = Example(article, abstract_sentences, self._vocab, self._hps)  # Process into an Example.
             self._example_queue.put(example)  # place the Example in the example queue.
